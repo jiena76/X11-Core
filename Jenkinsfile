@@ -12,7 +12,7 @@ def WindDown(errorname){
 ${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Failed!
 Find the logs here: http://aberdeen.purdueieee.org:1944/
         """
-        slackSend(color: "#FF0000",message: msg)
+        // slackSend(color: "#FF0000",message: msg)
 
         sendStatus("failure","http://aberdeen.purdueieee.org:1944/",errorname,"continuous-integration/aberdeen")
         error(errorname)
