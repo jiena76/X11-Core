@@ -1,15 +1,20 @@
-name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLNUM\} | grep "name" | awk \'{print $2, $3 }\'')
-// name = sh 'curl https://api.github.com/users/${PULLNUM} | egrep "name" | awk \'{print $2, $3 }\''
+// name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
+// name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
 // returns "First Last",
 // remove " and ",
-name = name.substring(1, name.length() - 2)
+// name = name.substring(1, name.length() - 2)
 
 def WindDown(errorname){
+        name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
+        // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
+        // returns "First Last",
+        // remove " and ",
+        name = name.substring(1, name.length() - 2)
 
         SendToPi("docker stop rov")
         SendToPi("docker rm rov")
         msg = """
-${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Failed!
+@${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Failed!
 Find the logs here: http://aberdeen.purdueieee.org:1944/
         """
         // slackSend(color: "#FF0000",message: msg)
@@ -44,6 +49,11 @@ https://api.github.com/repos/purduerov/X11-Core/statuses/\'${COMITSHA}\'?access_
 }
 
 node {
+        name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
+        // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
+        // returns "First Last",
+        // remove " and ",
+        name = name.substring(1, name.length() - 2)
         def app
         stage ('setupenv'){
                 sh "mkdir -p ${env.logsite}/PR#${PULLNUM}"
@@ -138,7 +148,7 @@ node {
         }       
         stage ('post'){
                 msg = """
-Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Passed all Tests!\n
+@${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Passed all Tests!\n
 Check out the logs here http://aberdeen.purdueieee.org:1944/
 Hey ${PULLMAKER}, you should bug ${REVIEWERS} to approve your pull
 """
