@@ -5,8 +5,8 @@
 // name = name.substring(1, name.length() - 2)
 
 def WindDown(errorname){
-        name = sh(returnStdout:true, script: """curl https://api.github.com/users/${PULLMAKER} \| grep "name" \| awk \'{print $2, $3 }\'""")
-        // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
+        def ver_script = $/eval """curl https://api.github.com/users/${PULLMAKER} | grep "name" | awk \'{print $2, $3 }\'"""/$
+        name = sh(returnStdout:true, script: "${ver_script}")
         // returns "First Last",
         // remove " and ",
         name = name.substring(1, name.length() - 2)
@@ -49,11 +49,11 @@ https://api.github.com/repos/purduerov/X11-Core/statuses/\'${COMITSHA}\'?access_
 }
 
 node {
-        name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
+        // name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
         // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
         // returns "First Last",
         // remove " and ",
-        name = name.substring(1, name.length() - 2)
+        // name = name.substring(1, name.length() - 2)
         def app
         stage ('setupenv'){
                 sh "mkdir -p ${env.logsite}/PR#${PULLNUM}"
