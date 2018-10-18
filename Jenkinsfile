@@ -5,7 +5,7 @@
 // name = name.substring(1, name.length() - 2)
 
 def WindDown(errorname){
-        name = sh(returnStdout:true, script: """curl https://api.github.com/users/\'${PULLMAKER}\' | grep "name" | awk \'{print $2, $3 }\'""")
+        name = sh(returnStdout:true, script: """curl https://api.github.com/users/${PULLMAKER} | grep "name" | awk \'{print $2, $3 }\'""")
         // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
         // returns "First Last",
         // remove " and ",
