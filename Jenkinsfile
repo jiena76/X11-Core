@@ -18,25 +18,25 @@ def WindDown(errorname){
 @${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Failed!
 Find the logs here: http://aberdeen.purdueieee.org:1944/
         """
-        // slackSend(color: "#FF0000",message: msg)
+        slackSend(color: "#FF0000",message: msg)
 
         sendStatus("failure","http://aberdeen.purdueieee.org:1944/",errorname,"continuous-integration/aberdeen")
         error(errorname)
 }
 
 def SendToPi(cmd){
-	try{
-		sh """ssh pi@128.46.156.193 \'${cmd}\'"""
-	}catch(error){
-		WindDown("Sending command to pi did not work, asshole")
-	}
+        try{
+                sh """ssh pi@128.46.156.193 \'${cmd}\'"""
+        }catch(error){
+                WindDown("Sending command to pi did not work, asshole")
+        }
 }
 def SaveLog(filename){
-	try{
-		sh "mv ${filename} ${env.logsite}/PR#${PULLNUM}"
-	}catch(error){
-		WindDown("Could Not find log")
-	}
+        try{
+                sh "mv ${filename} ${env.logsite}/PR#${PULLNUM}"
+        }catch(error){
+                WindDown("Could Not find log")
+        }
 }
 
 def sendStatus(state,target_url,description,context){
@@ -61,20 +61,20 @@ node {
                 sh "date > meta.log"
                 SaveLog("meta.log")
                 withPythonEnv('/usr/bin/python'){
-                    pysh 'pip install pylint'
-                    sh 'rm -rf socketIO-client'
-                    sh 'git clone https://github.com/AnotherOctopus/socketIO-client'
-                    pysh 'pip install ./socketIO-client/'
+                        pysh 'pip install pylint'
+                        sh 'rm -rf socketIO-client'
+                        sh 'git clone https://github.com/AnotherOctopus/socketIO-client'
+                        pysh 'pip install ./socketIO-client/'
                 }
         }
         stage ('build') {
-                try{    
+                try{
                         checkout scm
                         sh 'echo ${PULLBRANCH}'
-                        sh 'git checkout ${PULLBRANCH}' 
+                        sh 'git checkout ${PULLBRANCH}'
                         sh 'git pull'
                 }catch(error){
-                        msg = "Hum, we failed checking out the repo. Idk man" 
+                        msg = "Hum, we failed checking out the repo. Idk man"
                         // slackSend(color: "#FF0000",message: msg)
                         WindDown("SOURCE FAILED")
                 }
@@ -85,10 +85,10 @@ node {
                         // slackSend(color: "#FF0000",message: msg)
                         WindDown("BUILD FAILED")
                 }
-                try{    
-			sh "cd surface/ && npm install"
+                try{
+                        sh "cd surface/ && npm install"
                 }catch(error){
-                        msg = "Hum, we failed building frontend. IAAAAAAAANNANAN" 
+                        msg = "Hum, we failed building frontend. IAAAAAAAANNANAN"
                         // slackSend(color: "#FF0000",message: msg)
                         WindDown("Frontend  FAILED")
                 }
@@ -114,7 +114,7 @@ node {
                                 pysh(returnStdout:true, script: 'pylint --rcfile=pylintrc.conf surface/pakfront/CV/ > pylint.log').trim()
                                 pysh(returnStdout:true, script: 'pylint --rcfile=pylintrc.conf rov/ >> pylint.log').trim()
                         }catch(error){
-                                linterrmsg +="Linting Python Files on PR#${PULLNUM} Failed!\n" 
+                                linterrmsg +="Linting Python Files on PR#${PULLNUM} Failed!\n"
                         }
                 }
 
@@ -122,14 +122,14 @@ node {
                 try{
                         sh(returnStdout:true, script: 'cd surface && eslint -c "../eslintrc.js" . > ../eslint.log').trim()
                 }catch(error){
-                        linterrmsg +="Linting JSX Files on PR#${PULLNUM} Failed!\n" 
+                        linterrmsg +="Linting JSX Files on PR#${PULLNUM} Failed!\n"
                 }
 
                 //Lint Go
                 try{
-			golint = sh(returnStdout:true, script: 'find . -iname "*.go" | xargs gofmt -d > golint.log').trim()
+                        golint = sh(returnStdout:true, script: 'find . -iname "*.go" | xargs gofmt -d > golint.log').trim()
                 }catch(error){
-                        linterrmsg +="Linting go Files on PR#${PULLNUM} Failed!\n" 
+                        linterrmsg +="Linting go Files on PR#${PULLNUM} Failed!\n"
                 }
 
                 SaveLog("pylint.log")
@@ -146,7 +146,7 @@ node {
                         pysh 'python tests/testem.py > runlog.log 2>&1'
                 }
                 SaveLog("runlog.log")
-        }       
+        }
         stage ('post'){
                 msg = """
 @${name} Pull Request #${PULLNUM}, on branch ${PULLBRANCH} Passed all Tests!\n
