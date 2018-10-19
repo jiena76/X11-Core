@@ -5,8 +5,9 @@
 // name = name.substring(1, name.length() - 2)
 
 def WindDown(errorname){
-        def ver_script = $/eval """curl https://api.github.com/users/${PULLMAKER} | grep \'name\' | awk \'{print $2, $3 }\'"""/$
-        name = sh(returnStdout:true, script: "${ver_script}")
+//         def ver_script = $/eval """curl https://api.github.com/users/${PULLMAKER} | grep 'name' | awk '{print $2, $3 }'"""/$
+        name = sh(returnStdout:true, script: """
+        "curl https://api.github.com/users/${PULLMAKER}""" | """grep 'name'""" | """awk '{print \$2, \$3 }'" """)
         // returns "First Last",
         // remove " and ",
         name = name.substring(1, name.length() - 2)
