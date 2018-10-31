@@ -114,7 +114,7 @@ node {
                                 pysh(returnStdout:true, script: 'pylint --rcfile=pylintrc.conf surface/pakfront/CV/ > pylint.log').trim()
                                 pysh(returnStdout:true, script: 'pylint --rcfile=pylintrc.conf rov/ >> pylint.log').trim()
                         }catch(error){
-                                linterrmsg +="Linting Python Files on PR#${PULLNUM} Failed!\n"
+                                linterrmsg +="@${name} Linting Python Files on PR#${PULLNUM} Failed!\n"
                         }
                 }
 
@@ -122,14 +122,14 @@ node {
                 try{
                         sh(returnStdout:true, script: 'cd surface && eslint -c "../eslintrc.js" . > ../eslint.log').trim()
                 }catch(error){
-                        linterrmsg +="Linting JSX Files on PR#${PULLNUM} Failed!\n"
+                        linterrmsg +="@${name} Linting JSX Files on PR#${PULLNUM} Failed!\n"
                 }
 
                 //Lint Go
                 try{
                         golint = sh(returnStdout:true, script: 'find . -iname "*.go" | xargs gofmt -d > golint.log').trim()
                 }catch(error){
-                        linterrmsg +="Linting go Files on PR#${PULLNUM} Failed!\n"
+                        linterrmsg +="@${name} Linting go Files on PR#${PULLNUM} Failed!\n"
                 }
 
                 SaveLog("pylint.log")
