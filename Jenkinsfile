@@ -137,7 +137,7 @@ node {
                 SaveLog("golint.log")
 
                 if(linterrmsg != ""){
-                        // slackSend(color: "#FF0000",message: linterrmsg)
+                        slackSend(color: "#FF0000",message: linterrmsg)
                         WindDown("LINTERROR")
                 }
         }
