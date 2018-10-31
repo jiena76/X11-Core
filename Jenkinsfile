@@ -50,11 +50,14 @@ https://api.github.com/repos/purduerov/X11-Core/statuses/\'${COMITSHA}\'?access_
 }
 
 node {
-        // name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
-        // name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
-        // returns "First Last",
+        name = sh(returnStdout:true, script: """
+                "curl https://api.github.com/users/${PULLMAKER}""" | """grep 'name'""" | """awk '{print \$2, \$3 }'" """)
         // remove " and ",
-        // name = name.substring(1, name.length() - 2)
+        name = name.substring(1, name.length() - 2)
+
+        msg = "@${name} PLS SEND SLACK"
+        slackSend(color: "#FF0000",message: msg)
+        
         def app
         stage ('setupenv'){
                 sh "mkdir -p ${env.logsite}/PR#${PULLNUM}"
