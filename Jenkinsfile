@@ -60,7 +60,6 @@ node {
                         sh 'git clone https://github.com/AnotherOctopus/socketIO-client'
                         pysh 'pip install ./socketIO-client/'
                 }
-                WindDown("PLS SEND SLACK")
         }
         stage ('build') {
                 try{
