@@ -100,8 +100,8 @@ node {
                         app.push(tag)
                         SendToPi("docker  run -d --name=\"rov\" anotheroctopus/rovimage:'${PULLBRANCH}'")
                 }catch(error){
-                        msg = "Launching the ROV failed. Probably some networking nonesense"
-                        // slackSend(color: "#FF0000",message: msg)
+                        msg = "@${name} Launching the ROV failed. Probably some networking nonesense"
+                        slackSend(color: "#FF0000",message: msg)
                         WindDown("ROV FAILED TO LAUNCH")
                 }
         }
