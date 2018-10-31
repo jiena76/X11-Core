@@ -1,7 +1,6 @@
-// name = sh(returnStdout:true, script: 'curl https://api.github.com/users/\$\{PULLMAKER\} | grep "name" | awk \'{print $2, $3 }\'')
-// name = sh 'curl https://api.github.com/users/${PULLMAKER} | egrep "name" | awk \'{print $2, $3 }\''
-// returns "First Last",
-// remove " and ",
+// name = sh(returnStdout:true, script: """
+// "curl https://api.github.com/users/${PULLMAKER}""" | """grep 'name'""" | """awk '{print \$2, \$3 }'" """)
+// // remove " and ",
 // name = name.substring(1, name.length() - 2)
 
 def WindDown(errorname){
@@ -61,13 +60,7 @@ node {
                         sh 'git clone https://github.com/AnotherOctopus/socketIO-client'
                         pysh 'pip install ./socketIO-client/'
                 }
-                name = sh(returnStdout:true, script: """
-                "curl https://api.github.com/users/${PULLMAKER}""" | """grep 'name'""" | """awk '{print \$2, \$3 }'" """)
-                // remove " and ",
-                name = name.substring(1, name.length() - 2)
-
-                msg = "@${name} PLS SEND SLACK"
-                slackSend(color: "#FF0000",message: msg)
+                WindDown("PLS SEND SLACK")
         }
         stage ('build') {
                 try{
